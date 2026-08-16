@@ -1,0 +1,5 @@
+@xset s off
+@xset -dpms
+@xset s noblank
+@unclutter -idle 0.5
+@chromium-browser --noerrdialogs --disable-infobars --kiosk --disable-gpu --disable-software-rasterizer --disable-dev-shm-usage --disable-extensions --disk-cache-dir=/dev/null https://perpustakaan.mtsn1pandeglang.sch.id/dashboard/sirkulasi

@@ -1,0 +1,12 @@
+[Unit]
+Description=RFID Kiosk Sirkulasi
+After=graphical.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/zulfikriyahya/rfid_kiosk.py
+Restart=always
+User=zulfikriyahya
+Environment=DISPLAY=:0
+
+[Install]
+WantedBy=graphical.target

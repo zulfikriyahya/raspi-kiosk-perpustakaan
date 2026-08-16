@@ -1,0 +1,8 @@
+# GPIO Shutdown Button (short press = shutdown, tekan lagi = boot)
+dtoverlay=gpio-shutdown,gpio_pin=3,active_low=1,gpio_pull=up,short_press_action=shutdown,long_press_action=none,debounce=100
+
+# HDMI stabilization (opsional, kalau ada masalah kedip layar terkait HDMI)
+hdmi_force_hotplug=1
+hdmi_group=1
+hdmi_mode=16
+config_hdmi_boost=4
