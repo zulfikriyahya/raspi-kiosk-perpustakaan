@@ -1,0 +1,11 @@
+[Unit]
+Description=Button Control - Restart on 5s hold
+After=multi-user.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/zulfikriyahya/button_control.py
+Restart=always
+User=zulfikriyahya
+
+[Install]
+WantedBy=multi-user.target

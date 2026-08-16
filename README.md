@@ -7,7 +7,7 @@ perpustakaan MTsN 1 Pandeglang.
 - Raspberry Pi 3B+ (Broadcom BCM2837B0, Quad-core ARM Cortex-A53 1.4GHz)
 - RFID Reader MFRC522
 - Buzzer aktif
-- Push button (untuk shutdown/boot)
+- Push button (restart & power-on)
 - Power supply resmi 5V/2.5A (WAJIB — hindari undervoltage)
 
 ## Wiring
@@ -31,11 +31,17 @@ perpustakaan MTsN 1 Pandeglang.
 | Signal (+) | 12 | GPIO18 |
 | GND (-)    | GND terdekat | GND |
 
-### Push Button (Shutdown/Boot) → Raspberry Pi
+### Push Button (Restart/Power-on) → Raspberry Pi
 | Button | Pin Fisik | GPIO (BCM) |
 |---|---|---|
 | Kaki 1 | 5 | GPIO3 |
 | Kaki 2 | GND terdekat | GND |
+
+## Perilaku Tombol
+- **Pi dalam kondisi mati (halt)** → tekan sebentar → Pi **boot otomatis** 
+  (fitur hardware bawaan GPIO3, tidak perlu konfigurasi tambahan)
+- **Pi sedang menyala** → tahan tombol **5 detik** → Pi **restart**
+  (ditangani oleh `button_control.py`)
 
 ## Format Output ID Kartu
 10 digit, zero-padded, dari 4 byte pertama UID kartu (little-endian),
@@ -51,9 +57,11 @@ Lihat `install.sh` untuk setup otomatis, atau ikuti langkah manual di
 - `test_rfid.py` — script test baca kartu sederhana
 - `test_uid_format.py` — verifikasi format UID sama dengan versi Arduino
 - `test_buzzer.py` — test buzzer standalone
-- `rfid-kiosk.service` — systemd service untuk auto-start
+- `button_control.py` — kontrol tombol restart (tahan 5 detik)
+- `rfid-kiosk.service` — systemd service untuk auto-start RFID kiosk
+- `button-control.service` — systemd service untuk kontrol tombol
 - `autostart` — konfigurasi kiosk browser (LXDE)
-- `config-additions.txt` — baris tambahan untuk /boot/config.txt
+- `config-additions.txt` — baris tambahan opsional untuk /boot/config.txt
 - `install.sh` — script instalasi otomatis
 - `SETUP.md` — panduan setup lengkap step-by-step
 - `TROUBLESHOOTING.md` — solusi masalah umum (lag, undervoltage, dll)

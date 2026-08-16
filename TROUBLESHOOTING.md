@@ -43,3 +43,39 @@ Selalu cek dengan:
 pinout
 ```
 Pin fisik #12 = GPIO18 (BCM), BUKAN GPIO12.
+
+## Tombol restart tidak berfungsi
+
+Cek status service:
+```bash
+sudo systemctl status button-control.service
+```
+
+Kalau ada error permission saat restart, pastikan baris sudoers sudah benar:
+```bash
+sudo visudo
+```
+Harus ada:
+zulfikriyahya ALL=(ALL) NOPASSWD: /sbin/reboot
+
+Cek juga apakah `gpiozero` sudah terinstall:
+```bash
+pip3 show gpiozero
+```
+
+## Tombol restart terlalu sensitif / restart walau tidak ditahan 5 detik
+
+Kemungkinan noise sinyal dari tombol mekanik. Tambahkan bounce_time 
+di script:
+```python
+button = Button(BUTTON_PIN, pull_up=True, hold_time=HOLD_SECONDS, bounce_time=0.05)
+```
+
+## Pi tidak mau boot otomatis setelah ditekan tombol saat kondisi mati
+
+Ini fitur hardware bawaan GPIO3, pastikan:
+- Wiring tombol benar (GPIO3 ke salah satu kaki, GND ke kaki lainnya)
+- Tidak ada overlay `dtoverlay=gpio-shutdown` lama yang masih aktif di 
+  `/boot/config.txt` — kalau ada, hapus/comment baris tersebut
+
+

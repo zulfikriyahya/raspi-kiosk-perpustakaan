@@ -22,7 +22,7 @@ bash install.sh
 ```bash
 sudo apt update && sudo apt upgrade -y
 sudo apt install python3-pip python3-dev chromium-browser xdotool unclutter -y
-pip3 install mfrc522 spidev RPi.GPIO
+pip3 install mfrc522 spidev RPi.GPIO gpiozero
 sudo raspi-config nonint do_spi 0
 ```
 
@@ -32,7 +32,7 @@ mkdir -p ~/.config/lxsession/LXDE-pi
 cp autostart ~/.config/lxsession/LXDE-pi/autostart
 ```
 
-## 5. Setup Auto-start Service
+## 5. Setup Auto-start Service RFID
 ```bash
 sudo cp rfid-kiosk.service /etc/systemd/system/
 sudo systemctl daemon-reload
@@ -40,25 +40,47 @@ sudo systemctl enable rfid-kiosk.service
 sudo systemctl start rfid-kiosk.service
 ```
 
-## 6. Setup Shutdown Button
-Edit `/boot/config.txt`, tambahkan isi dari `config-additions.txt`:
+## 6. Setup Tombol Restart (tahan 5 detik)
+
+Salin script dan service:
+```bash
+sudo cp button-control.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable button-control.service
+sudo systemctl start button-control.service
+```
+
+Beri izin restart tanpa password:
+```bash
+sudo visudo
+```
+Tambahkan baris:
+zulfikriyahya ALL=(ALL) NOPASSWD: /sbin/reboot
+
+> Catatan: kemampuan **boot otomatis dari kondisi mati** dengan tekan 
+> tombol sebentar adalah fitur hardware bawaan GPIO3 — tidak perlu 
+> overlay atau konfigurasi tambahan di `/boot/config.txt`.
+
+## 7. (Opsional) HDMI stabilization
+Kalau ada masalah kedip layar terkait HDMI, tambahkan isi dari
+`config-additions.txt` ke:
 ```bash
 sudo nano /boot/config.txt
 ```
 
-## 7. Cek GPU memory split
+## 8. Cek GPU memory split
 ```bash
 sudo raspi-config
 ```
 → Performance Options → GPU Memory → set ke 16
 
-## 8. Cek Compositor
+## 9. Cek Compositor
 ```bash
 sudo raspi-config
 ```
 → Advanced Options → Compositor → Disable
 
-## 9. Reboot dan Test
+## 10. Reboot dan Test
 ```bash
 sudo reboot
 ```
@@ -69,3 +91,10 @@ python3 test_buzzer.py       # test buzzer
 python3 test_uid_format.py   # verifikasi format UID sama dengan Arduino
 python3 test_rfid.py         # test baca kartu sederhana
 ```
+
+Testing tombol:
+- Tahan tombol fisik 5 detik saat Pi menyala → sistem harus restart
+- Matikan Pi (`sudo systemctl poweroff` atau cabut listrik lalu 
+  hubungkan kembali), tekan tombol sebentar → Pi harus boot otomatis
+
+
